@@ -1,0 +1,45 @@
+a {
+    text-decoration: none;
+}
+img {
+    width: 100px;
+}
+body {
+  background-color: #ffffff;
+}
+/* Navbar */
+.navbar {
+  background-color: #9e9d9d;
+  padding: 10px;
+}
+
+.navbar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar li {
+  display: inline;
+  margin-right: 10px;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #333;
+  padding: 5px;
+}
+
+.navbar a:hover {
+  background-color: #ddd;
+}
+
+.navbar button {
+  border: none;
+  background-color: #9e9d9d;
+  color: #333;
+}
+
+.navbar button:hover{
+  background-color: #ddd;
+}
