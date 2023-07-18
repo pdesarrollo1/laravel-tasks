@@ -19,13 +19,17 @@ class LoginController extends Controller
         $request->validate([
             'name' => 'required|min:3',
             'email' => 'required|unique:users,email',
-            'password' => 'required|min:8'
-        ]);
+            'password' => 'required|min:8|regex:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/',
+            'company' => 'required|min:3|max:255'
+        ], [
+            'password.regex' => 'La contraseña debe contener al menos una letra, un número y un carácter especial.',
+        ],);
 
         $user = User::create($request->all());
 
         auth()->login($user);
         return redirect()->route('tasks.index');
+        return $request->all();
     }
     public function SessionDestroy()
     {
@@ -45,6 +49,7 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
         if (auth()->attempt($data)) {
+            session()->regenerate();
             return redirect()->route('tasks.index');
         }
         throw ValidationException::withMessages([

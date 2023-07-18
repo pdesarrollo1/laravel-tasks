@@ -17,8 +17,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/home', HomeController::class)->name('home');
+Route::controller(TasksController::class)->group(function () {
+    Route::get('tasks/completed', 'IndexCompleted')->name('completed.index')->middleware('auth');
+    Route::put('tasks/completed/{task}', 'StoreCompleted')->name('completed.store')->middleware('auth');
+});
 Route::resource('tasks', TasksController::class)->middleware('auth'); //Esto sirve para hacer un CRUD con todas sus rutas el resource
-
 Route::controller(LoginController::class)->group(function () {
     Route::get('signup', 'SignupIndex')->name('signup')->middleware('guest');
     Route::post('signup', 'SignupStore')->name('signup.store')->middleware('guest');
@@ -26,7 +29,6 @@ Route::controller(LoginController::class)->group(function () {
     Route::get('signin', 'SigninIndex')->name('login')->middleware('guest');
     Route::post('signin', 'SigninStore')->name('login.store')->middleware('guest');
 });
-
 
 //Rutas Individuales
 // Route::get('tasks', [TasksController::class, 'index']);

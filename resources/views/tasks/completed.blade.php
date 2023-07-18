@@ -6,7 +6,7 @@
 </head>
 @section('content')
     <div class="task-page">
-        <h1>Estas son tus tareas</h1>
+        <h1>Estas son tus tareas completadas</h1>
         <a class="task-button" href="{{ route('tasks.create') }}">Crear Una Tarea</a>
         <ul class="task-list">
             @foreach ($tasks as $task)

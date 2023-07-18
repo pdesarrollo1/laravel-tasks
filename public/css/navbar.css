@@ -1,45 +1,56 @@
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
+
 img {
-    width: 100px;
+  width: 100px;
 }
+
 body {
-  background-color: #ffffff;
+background-color: #ffffff;
+margin: 0; /* Eliminamos el margen superior para que la barra quede pegada arriba */
+padding-top: 60px; /* Agregamos el espaciado para evitar que el contenido se oculte detrás de la barra */
 }
+
 /* Navbar */
 .navbar {
-  background-color: #9e9d9d;
-  padding: 10px;
+background-color: #9e9d9d;
+padding: 10px;
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+width: 100%;
+z-index: 999; /* Asegura que la barra esté siempre por encima del contenido */
 }
 
 .navbar ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+list-style-type: none;
+margin: 0;
+padding: 0;
 }
 
 .navbar li {
-  display: inline;
-  margin-right: 10px;
+display: inline;
+margin-right: 10px;
 }
 
 .navbar a {
-  text-decoration: none;
-  color: #333;
-  padding: 5px;
+text-decoration: none;
+color: #333;
+padding: 5px;
 }
 
 .navbar a:hover {
-  background-color: #ddd;
+background-color: #ddd;
 }
 
 .navbar button {
-  border: none;
-  background-color: #9e9d9d;
-  color: #333;
+border: none;
+background-color: #9e9d9d;
+color: #333;
 }
 
 .navbar button:hover{
-  background-color: #ddd;
+background-color: #ddd;
 }

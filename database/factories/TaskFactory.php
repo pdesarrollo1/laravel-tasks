@@ -22,6 +22,7 @@ class TaskFactory extends Factory
             'title'=>$this->faker->sentence(),
             'description'=>$this->faker->paragraph(2),
             'is_important'=>$this->faker->boolean(),
+            'completed'=>$this->faker->boolean(),
             'user_id'=>$this->faker->randomElement($userIds),
         ];
     }

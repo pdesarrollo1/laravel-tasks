@@ -1,36 +1,39 @@
 /* Forms */
 
 .registration-form {
-    width: 300px;
-    margin: 0 auto;
-    /* background-color: #4d4b4b; */
-    padding: 20px;
-  }
-  
-  .registration-form h2 {
-    text-align: center;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    display: block;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 5px;
-    /* background-color: #b6b6b6; */
-  }
-  
-  button[type="submit"] {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
-    border: none;
-    cursor: pointer;
-  }
-  
+  width: 300px;
+  margin: 0 auto;
+  /* background-color: #4d4b4b; */
+  padding: 20px;
+}
+
+.registration-form h2 {
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 5px;
+  /* background-color: #b6b6b6; */
+}
+
+button[type="submit"] {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50;
+  border: none;
+  cursor: pointer;
+}
+.column-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}

@@ -11,6 +11,7 @@ class TasksController extends Controller
     public function index()
     {
         $tasks = Task::where('user_id', auth()->user()->id)
+            ->where('completed', false)
             ->orderBy('id', 'desc')
             ->paginate();
         return view('tasks.index', compact('tasks'));
@@ -58,9 +59,9 @@ class TasksController extends Controller
             'title' => 'required',
             'description' => 'required'
         ]);
-        
+
         $task->update($request->all());
-        
+
         return redirect()->route('tasks.index');
     }
 
@@ -68,6 +69,22 @@ class TasksController extends Controller
     {
         $task->delete();
         return redirect()->route('tasks.index');
+    }
+
+    public function StoreCompleted(Task $task)
+    {
+        $task->update([
+            'completed' => true
+        ]);
+        return redirect()->route('tasks.index');
+    }
+    public function IndexCompleted()
+    {
+        $tasks = Task::where('user_id', auth()->user()->id)
+            ->where('completed', true)
+            ->orderBy('updated_at', 'desc')
+            ->paginate();
+        return view('tasks.completed', compact('tasks'));
     }
 
     //Funcion para mostrar los datos esta es la convencion show

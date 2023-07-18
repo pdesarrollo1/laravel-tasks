@@ -13,19 +13,22 @@
 <body>
     <nav class="navbar">
         <ul>
-            <li><a href="{{ route('home') }}">Inicio</a></li>
-            @guest
-                <li><a href={{ route('login') }}>Iniciar sesión</a></li>
-                <li><a href={{ route('signup') }}>Registrarse</a></li>
-            @endguest
-            @auth
-                <li><a href="{{ route('tasks.index') }}">Tareas</a></li>
-                <form action="{{ route('logout') }}" method="POST">
+            <form action="{{ route('logout') }}" method="POST">
+                <li><a href="{{ route('home') }}">Inicio</a></li>
+                @guest
+                    <li><a href={{ route('login') }}>Iniciar sesión</a></li>
+                    <li><a href={{ route('signup') }}>Registrarse</a></li>
+                @endguest
+                @auth
+                    <li><a href="{{ route('tasks.index') }}">Tareas</a></li>
+                    <li><a href="{{ route('completed.index') }}">Tareas Completadas</a></li>
+
+
                     @csrf
                     <button type="submit">Cerrar Sesion</button>
-                </form>
-            @endauth
 
+                @endauth
+            </form>
         </ul>
     </nav>
 
