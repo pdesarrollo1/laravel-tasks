@@ -20,6 +20,7 @@ Route::get('/home', HomeController::class)->name('home');
 Route::controller(TasksController::class)->group(function () {
     Route::get('tasks/completed', 'IndexCompleted')->name('completed.index')->middleware('auth');
     Route::put('tasks/completed/{task}', 'StoreCompleted')->name('completed.store')->middleware('auth');
+    Route::post('filter', 'Filter')->name('tasks.filter');
 });
 Route::resource('tasks', TasksController::class)->middleware('auth'); //Esto sirve para hacer un CRUD con todas sus rutas el resource
 Route::controller(LoginController::class)->group(function () {

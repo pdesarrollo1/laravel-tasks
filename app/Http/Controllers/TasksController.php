@@ -87,6 +87,37 @@ class TasksController extends Controller
         return view('tasks.completed', compact('tasks'));
     }
 
+    public function Filter(Request $request)
+    {
+        $data = $request->get('data');
+        $data = intval($data);
+        $option = $request->get('filterOptions');
+        $option = intval($option);
+        if ($data == 0) {
+            $completed = false;
+        } else {
+            $completed = true;
+        }
+        switch ($option) {
+            case 0:
+                return redirect()->route('tasks.index');
+            case 1:
+                $tasks = Task::where('user_id', auth()->user()->id)
+                    ->where('completed', $completed)
+                    ->where('is_important', false)
+                    ->orderBy('id', 'desc')
+                    ->paginate();
+                return view('tasks.index', compact('tasks'));
+            case 2:
+                $tasks = Task::where('user_id', auth()->user()->id)
+                    ->where('completed', $completed)
+                    ->where('is_important', true)
+                    ->orderBy('id', 'desc')
+                    ->paginate();
+                return view('tasks.index', compact('tasks'));
+        }
+    }
+
     //Funcion para mostrar los datos esta es la convencion show
     // public function showExample($id)
     // {
