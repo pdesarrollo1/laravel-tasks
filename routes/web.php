@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\TasksController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +32,10 @@ Route::controller(LoginController::class)->group(function () {
     Route::post('signin', 'SigninStore')->name('login.store')->middleware('guest');
 });
 
+Route::controller(SessionsController::class)->group(function(){
+    Route::get('sessions', 'index')->name('session.index')->middleware('auth');
+    Route::post('sessions', 'store')->name('session.store')->middleware('auth');;
+});
 //Rutas Individuales
 // Route::get('tasks', [TasksController::class, 'index']);
 

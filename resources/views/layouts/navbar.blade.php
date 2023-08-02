@@ -22,7 +22,7 @@
                 @auth
                     <li><a href="{{ route('tasks.index') }}">Tareas</a></li>
                     <li><a href="{{ route('completed.index') }}">Tareas Completadas</a></li>
-
+                    <li><a href="{{ route('session.index') }}">Sesiones</a></li>
 
                     @csrf
                     <button type="submit">Cerrar Sesion</button>
