@@ -13,12 +13,17 @@ class SessionsController extends Controller
             ->whereNotNull('user_id')
             ->leftJoin('users', 'sessions.user_id', '=', 'users.id')
             ->get();
+        foreach($sessions as $session) {
+           $timestamp =  $session->last_activity;
+           $dateTime = date('Y-m-d H:i:s', $timestamp);
+        }
+       
         return view('sessions.index', compact('sessions'));
     }
 
     public function store(Request $request)
     {
-        $input = $request->input; // Suponiendo que estás enviando el ID de sesión en el campo 'session_id'
+        $input = $request->input; 
 
         // Buscar el registro de sesión por su ID
         $session = DB::table('sessions')->find($input);
