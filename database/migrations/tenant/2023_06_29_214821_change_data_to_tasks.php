@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tenant', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->timestamps();
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->string('title', 100)->change();
         });
     }
 
@@ -23,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tenant');
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->string('title', 255)->change();
+        });
     }
 };

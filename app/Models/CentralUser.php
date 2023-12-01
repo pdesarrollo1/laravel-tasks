@@ -2,24 +2,25 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laratrust\Contracts\LaratrustUser;
-use Laratrust\Traits\HasRolesAndPermissions;
-use Laravel\Sanctum\HasApiTokens;
-use Stancl\Tenancy\Contracts\Syncable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Stancl\Tenancy\Contracts\SyncMaster;
+use Stancl\Tenancy\Database\Concerns\CentralConnection;
 use Stancl\Tenancy\Database\Concerns\ResourceSyncing;
+use Stancl\Tenancy\Database\Models\TenantPivot;
 
-class User extends Authenticatable implements Syncable
+class CentralUser extends Authenticatable implements SyncMaster
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRolesAndPermissions, ResourceSyncing;
+    // Note that we force the central connection on this model
+    use ResourceSyncing, CentralConnection;
 
-    /**
+    protected $guarded = [];
+    public $timestamps = false;
+    public $table = 'users';
+
+     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -30,7 +31,6 @@ class User extends Authenticatable implements Syncable
     //     'password',
     //     'company'
     // ];
-    protected $guarded = [];
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -49,11 +49,17 @@ class User extends Authenticatable implements Syncable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
-    public function Tasks()
+    public function tenants(): BelongsToMany
     {
-        return $this->hasMany('App\Models\Task');
+        return $this->belongsToMany(Tenant::class, 'tenant_users', 'global_user_id', 'tenant_id', 'global_id')
+            ->using(TenantPivot::class);
     }
+
+    public function getTenantModelName(): string
+    {
+        return User::class;
+    }
+
     public function getGlobalIdentifierKey()
     {
         return $this->getAttribute($this->getGlobalIdentifierKeyName());
@@ -66,7 +72,7 @@ class User extends Authenticatable implements Syncable
 
     public function getCentralModelName(): string
     {
-        return CentralUser::class;
+        return static::class;
     }
 
     public function getSyncedAttributeNames(): array
