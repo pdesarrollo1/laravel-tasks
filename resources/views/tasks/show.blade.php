@@ -10,6 +10,7 @@
         <form class="task-form" action="{{ route('tasks.update', $task) }}" method="post">
             @csrf
             @method('put')
+            <input type="hidden" name="tenant" id="tenant" value="{{$task->tenant}}">
             <label for="title">Titulo <br>
                 <input type="text" id="title" name="title" value="{{ old('title', $task->title) }}">
             </label>
@@ -35,6 +36,7 @@
         <form class="delete-task-form" action="{{ route('tasks.destroy', $task) }}" method="post">
             @csrf
             @method('delete')
+            <input type="hidden" name="tenant" id="tenant" value="{{$task->tenant}}">
             <button type="submit">Borrar</button>
         </form>
         @if (!$task->completed)

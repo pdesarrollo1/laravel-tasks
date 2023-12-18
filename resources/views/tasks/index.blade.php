@@ -21,15 +21,19 @@
             @foreach ($tasks as $task)
                 @if ($task->is_important)
                     <strong>
-                        <li><a href="{{ route('tasks.show', $task->id) }}" style="color: red">{{ $task->title }}</a></li>
+                        <li><a href="{{ route('tasks.show', ['id' => $task->id, 'tenant' => $task->tenant]) }}"
+                                style="color: red">{{ $task->title }}</a></li>
                     </strong>
                 @else
-                    <li><a href="{{ route('tasks.show', $task->id) }}">{{ $task->title }}</a></li>
+                    <li><a
+                            href="{{ route('tasks.show', ['id' => $task->id, 'tenant' => $task->tenant]) }}">{{ $task->title }}</a>
+                    </li>
                 @endif
             @endforeach
+
         </ul>
         <img src="{{ asset('img/batman.png') }}" alt="description of myimage">
-        {{ $tasks->links() }}
+        {{-- {{ $tasks->links() }} --}}
     </div>
 @endsection
-<script src="{{asset('js/taskFilter.js')}}"></script>
+<script src="{{ asset('js/taskFilter.js') }}"></script>

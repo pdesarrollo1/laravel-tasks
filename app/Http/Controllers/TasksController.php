@@ -3,17 +3,93 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TasksController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (auth()->check()) {
+
+                // $tenants = DB::table('tenants')->get();
+                $tenants = DB::table('laravel_tasks.tenant_users')
+                    ->select('laravel_tasks.tenant_users.global_user_id', 'laravel_tasks.tenants.data', 'laravel_tasks.tenants.id AS tenant')
+                    ->join('laravel_tasks.tenants', 'tenants.id', '=', 'tenant_users.tenant_id')
+                    ->where('tenant_users.global_user_id', '=', auth()->user()->global_id)
+                    ->get();
+                // dd($tenants);
+                foreach ($tenants as $tenant) {
+                    $databaseName = json_decode($tenant->data)->tenancy_db_name;
+                    $name = "database.connections." . $databaseName;
+                    // Configurar la conexión de base de datos para el inquilino actual
+                    config([
+                        $name => [
+                            'driver' => 'mysql',
+                            'database' => $databaseName,
+                            'host' => env('DB_HOST', '127.0.0.1'),
+                            'port' => env('DB_PORT', '3306'),
+                            'username' => env('DB_USERNAME', 'forge'),
+                            'password' => env('DB_PASSWORD', ''),
+                        ],
+                    ]);
+                }
+            }
+
+            return $next($request);
+        });
+    }
     //Funcion para la pagina principal esta es la convencion index
     public function index()
     {
-        $tasks = Task::where('user_id', auth()->user()->id)
+        // dd(auth()->user());
+
+        // $tasks = Task::where('user_id', auth()->user()->id)
+        //     ->where('completed', false)
+        //     ->orderBy('id', 'desc')
+        //     ->paginate();
+        // $tasks = Task::all();
+        // return $tasks;
+
+        // $tasks = DB::table('tenantbar.tasks')
+        //     ->select('tenantbar.tasks.*')
+        //     ->get();
+        $userTenants = DB::table('laravel_tasks.tenant_users')
+        ->select('laravel_tasks.tenant_users.global_user_id', 'laravel_tasks.tenants.data', 'laravel_tasks.tenants.id AS tenant')
+        ->join('laravel_tasks.tenants', 'tenants.id', '=', 'tenant_users.tenant_id')
+        ->where('tenant_users.global_user_id', '=', auth()->user()->global_id)
+        ->get();
+        
+        $tasks = [];
+        foreach($userTenants as $item){
+            $database = json_decode($item->data)->tenancy_db_name;
+            $tenant = $item->tenant;
+            // $userTasks = DB::table($database . '.tasks')
+            // ->select('*')
+            // ->where('global_user_id', auth()->user()->global_id)
+            // ->where('completed', false)
+            // ->orderBy('id', 'desc')
+            // ->get();
+            $userTasks = Task::on($database)
+            ->select('*')
+            ->where('global_user_id', auth()->user()->global_id)
             ->where('completed', false)
             ->orderBy('id', 'desc')
-            ->paginate();
+            ->get();
+            $userTasks = $userTasks->map(function ($task) use ($tenant) {
+                $task->tenant = $tenant;
+                return $task;
+            });
+            foreach($userTasks as $userTask){
+              array_push($tasks, $userTask);
+            }
+          }
+        // return $tasks;
+        // $tenants = Tenant::all();
+        // return $tenants;
         return view('tasks.index', compact('tasks'));
     }
 
@@ -42,31 +118,40 @@ class TasksController extends Controller
         $task = new Task;
         $task->fill($request->all());
         $task->user_id = auth()->id(); // Asignar el ID del usuario autenticado
+        $task->global_user_id = auth()->user()->global_id; // Asignar el ID del usuario autenticado
         $task->save();
-
-        return redirect()->route('tasks.show', $task->id); //podemos pasar solo $task
+        return redirect()->route('tasks.index'); //podemos pasar solo $task
     }
 
     //Funcion para mostrar los datos esta es la convencion show
-    public function show(Task $task)
+    public function show($task, $tenant)
     {
+        $database = 'tenant'.$tenant;
+        $task = Task::on($database)->find($task);
+        $task->tenant = $tenant;
         return view('tasks.show', compact('task')); //De esta forma se recupera con el mismo nombre de la variable
     }
 
-    public function update(Request $request, Task $task) //  Laravel entiende que quiero que ese $id sea una instancia de la clase Task cuyo id sea lo que le estoy pasando por URL
+    public function update(Request $request, $task) //  Laravel entiende que quiero que ese $id sea una instancia de la clase Task cuyo id sea lo que le estoy pasando por URL
     {
         $request->validate([
             'title' => 'required',
             'description' => 'required'
         ]);
-
-        $task->update($request->all());
+        $database = 'tenant'.$request->tenant;
+        $task = Task::on($database)->find($task);
+        $task->update([
+            'title' => $request->title,
+            'description' => $request->description
+        ]);
 
         return redirect()->route('tasks.index');
     }
 
-    public function destroy(Task $task)
+    public function destroy( $task)
     {
+        $database = 'tenant'.request()->tenant;
+        $task = Task::on($database)->find($task);
         $task->delete();
         return redirect()->route('tasks.index');
     }

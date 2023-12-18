@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Tenant;
 
-use App\Models\CentralUser;
+use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
+
 
 class LoginController extends Controller
 {
@@ -26,10 +28,10 @@ class LoginController extends Controller
             'password.regex' => 'La contraseña debe contener al menos una letra, un número y un carácter especial.',
         ],);
 
-        $user = CentralUser::create([
+        $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
-            'password' => "2020*",
+            'email'=> $request->email,
+            'password'=> "2020*",
             'company' => $request->company,
             'global_id' => Str::slug($request->name, '-')
         ]);
